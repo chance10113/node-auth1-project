@@ -90,8 +90,18 @@ router.post("/login", checkUsernameExists, (req, res, next) => {
   }
  */
 
-router.get("/logout", (req, res, next) => {   //eslint-disable-line
-  res.json("logout");
+router.get("/logout", (req, res, next) => {
+  if (req.session.user) {
+    res.session.destroy((error) => {
+      if (error) {
+        next(error);
+      } else {
+        res.json({ message: "logged out" });
+      }
+    });
+  } else {
+    res.json({ message: "no session" });
+  }
 });
 // Don't forget to add the router to the `exports` object so it can be required in other modules
 module.exports = router;
